@@ -36,18 +36,23 @@ class XConsole extends Console
 
         if (strpos($task, ':') !== false || strpos($task, '@') !== false) {
             // 新Cli入参方式
-            list($task, $action) = explode('@', $argv[1]);
-            if (empty($action)) {
+
+            $result = explode('@', $argv[1]);
+            // dd($action);
+            if (empty($result[1])) {
                 $action = 'main';
+            } else {
+                $action = $result[1];
             }
-            if (empty($task)) {
+
+            if (empty($result[0])) {
                 $task = 'Main';
             } else {
                 $task = implode('\\', array_map(
                     function ($v) {
                         return Text::camelize($v);
                     },
-                    explode(':', $task)
+                    explode(':', $result[0])
                 ));
             }
             $arguments['task'] = $task;
