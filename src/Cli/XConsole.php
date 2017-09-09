@@ -26,8 +26,14 @@ class XConsole extends Console
 
     public function getArgumentsFromArgv(array $argv = null)
     {
-        $task = $argv[1];
         $arguments = [];
+
+        if (empty($argv[1])) {
+            return $arguments;
+        }
+
+        $task = $argv[1];
+
         if (strpos($task, ':') !== false || strpos($task, '@') !== false) {
             // 新Cli入参方式
             list($task, $action) = explode('@', $argv[1]);
