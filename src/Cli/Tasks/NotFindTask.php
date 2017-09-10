@@ -25,7 +25,7 @@ class NotFindTask extends Task
     /** @var  方法名称 */
     protected $actionName;
     /** @var  脚本命令名 */
-    protected $tasksName;
+    protected $tasksName = [];
 
     public function mainAction(array $params = [])
     {
@@ -85,7 +85,7 @@ class NotFindTask extends Task
             }
         }
 
-        if (count($this->taskName) === 0) {
+        if (count($this->tasksName) === 0) {
             echo "Command {$this->taskName} is not defined" . PHP_EOL;
             return true;
         }
@@ -94,6 +94,7 @@ class NotFindTask extends Task
         //     make:auth
         echo "Command {$this->taskName} is not defined" . PHP_EOL;
         echo "Did you mean one of these?" . PHP_EOL;
+
         foreach ($this->tasksName as $name) {
             echo "    " . $name . PHP_EOL;
         }
