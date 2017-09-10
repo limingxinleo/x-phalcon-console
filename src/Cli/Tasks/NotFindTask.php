@@ -80,7 +80,7 @@ class NotFindTask extends Task
 
         foreach ($res as $file) {
             $name = $this->fileToTaskName($file->getRelativePath(), $file->getBasename(), '.php');
-            if (strpos($name, $this->taskName) !== false) {
+            if ($this->similiar($this->taskName, $name)) {
                 $this->tasksName[] = $name;
             }
         }
@@ -89,9 +89,7 @@ class NotFindTask extends Task
             echo "Command {$this->taskName} is not defined" . PHP_EOL;
             return true;
         }
-        //     Command "make" is not defined.
-        // Did you mean one of these?
-        //     make:auth
+
         echo "Command {$this->taskName} is not defined" . PHP_EOL;
         echo "Did you mean one of these?" . PHP_EOL;
 
@@ -114,5 +112,31 @@ class NotFindTask extends Task
         }
 
         return $name;
+    }
+
+    /**
+     * @desc   判断两者是否相似
+     * @author limx
+     * @param $expect
+     * @param $actual
+     */
+    protected function similiar($expect, $actual)
+    {
+        if (stristr($actual, $expect) !== false) {
+            return true;
+        }
+
+        $actual = explode('\\', $actual);
+        $expect = explode('\\', $expect);
+        foreach ($expect as $i => $v) {
+            $is_true = isset($actual[$i])
+                && isset($expect[$i])
+                && stristr($actual[$i], $expect[$i]) !== false;
+            if ($is_true) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
