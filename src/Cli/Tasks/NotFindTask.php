@@ -101,7 +101,8 @@ class NotFindTask extends Task
             $description = '';
             if (!$class->isAbstract()) {
                 if ($class->hasProperty($this->descriptionName)) {
-                    $description = $class->getProperty($this->descriptionName);
+                    $properties = $class->getDefaultProperties();
+                    $description = $properties[$this->descriptionName];
                 }
                 echo "    " . $name . "   " . $description . PHP_EOL;
             }
