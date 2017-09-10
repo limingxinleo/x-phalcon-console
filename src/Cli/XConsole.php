@@ -29,6 +29,7 @@ class XConsole extends Console
     public function handle(array $argv = null)
     {
         $this->init($argv);
+
         return parent::handle([
             'task' => $this->task,
             'action' => $this->action,
@@ -36,6 +37,12 @@ class XConsole extends Console
         ]);
     }
 
+    /**
+     * @desc   参数初始化
+     * @author limx
+     * @param array|null $argv
+     * @return array
+     */
     public function init(array $argv = null)
     {
         $this->argv = $argv;
@@ -101,4 +108,6 @@ class XConsole extends Console
         // 传统的Array入参方式
         return self::ARGUMENTS_TYPE_ARRAY;
     }
+
+
 }
