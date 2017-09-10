@@ -12,6 +12,7 @@ use Phalcon\Cli\Task;
 use Phalcon\Cli\Console\Exception;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
+use Symfony\Component\Finder\Finder;
 
 class ListTask extends Task
 {
@@ -22,6 +23,8 @@ class ListTask extends Task
     protected $taskName;
 
     protected $actionName;
+
+    protected $tasks;
 
     public function mainAction(array $params = [])
     {
@@ -67,6 +70,28 @@ class ListTask extends Task
 
     protected function handle()
     {
-        echo 111;
+        $finder = new Finder();
+        $res = $finder->files()->in($this->tasksDir)->name("*.php");
+        if ($res->count() === 0) {
+            echo "对不起，没有找到相关脚本" . PHP_EOL;
+            return true;
+        }
+
+        foreach ($res as $file) {
+            $this->tasks[] = $this->fileToClass($file->getRelativePath(), $file->getBasename(), '.php');
+        }
+        dd($this->tasks);
+    }
+
+    /**
+     * @desc   把相应文件转化为类名
+     * @author limx
+     */
+    protected function fileToClass($relativePath, $baseName, $ext = '.php')
+    {
+        if (!empty($relativePath)) {
+            return $this->namespace . '\\' . $relativePath . '\\' . rtrim($baseName, $ext);
+        }
+        return $this->namespace . '\\' . rtrim($baseName, $ext);
     }
 }
