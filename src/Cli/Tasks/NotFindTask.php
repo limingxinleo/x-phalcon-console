@@ -13,6 +13,7 @@ use Phalcon\Cli\Console\Exception;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 use Symfony\Component\Finder\Finder;
+use ReflectionClass;
 
 class NotFindTask extends Task
 {
@@ -26,6 +27,8 @@ class NotFindTask extends Task
     protected $actionName;
     /** @var  脚本命令名 */
     protected $tasksName = [];
+    /** @var string 描述字段 */
+    protected $descriptionName = 'description';
 
     public function mainAction(array $params = [])
     {
@@ -94,7 +97,14 @@ class NotFindTask extends Task
         echo "Did you mean one of these?" . PHP_EOL;
 
         foreach ($this->tasksName as $name) {
-            echo "    " . $name . PHP_EOL;
+            $class = new ReflectionClass($this->namespace . '\\' . $name);
+            $description = '';
+            if (!$class->isAbstract()) {
+                if ($class->hasProperty($this->descriptionName)) {
+                    $description = $class->getProperty($this->descriptionName);
+                }
+                echo "    " . $name . "   " . $description . PHP_EOL;
+            }
         }
 
     }
