@@ -16,63 +16,89 @@ class XConsole extends Console
     const ARGUMENTS_TYPE_ARRAY = 0;
     const ARGUMENTS_TYPE_STRING = 1;
 
-    protected $argvType;
+    protected $run;
+
+    protected $task;
+
+    protected $action;
+
+    protected $params;
+
+    protected $argv;
 
     public function handle(array $argv = null)
     {
-        $arguments = $this->getArgumentsFromArgv($argv);
-        return parent::handle($arguments);
+        $this->init($argv);
+        return parent::handle([
+            'task' => $this->task,
+            'action' => $this->action,
+            'params' => $this->params,
+        ]);
     }
 
-    public function getArgumentsFromArgv(array $argv = null)
+    public function init(array $argv = null)
     {
+        $this->argv = $argv;
         $arguments = [];
 
         if (empty($argv[1])) {
             return $arguments;
         }
 
-        $task = $argv[1];
-
-        if (strpos($task, ':') !== false || strpos($task, '@') !== false) {
-            // 新Cli入参方式
-
+        if ($this->getArgvType() === self::ARGUMENTS_TYPE_STRING) {
+            // String 入参方式
             $result = explode('@', $argv[1]);
-            // dd($action);
-            if (empty($result[1])) {
-                $action = 'main';
-            } else {
-                $action = $result[1];
-            }
 
+            // 设置Task
             if (empty($result[0])) {
-                $task = 'Main';
+                $this->task = 'Main';
             } else {
-                $task = implode('\\', array_map(
+                $this->task = implode('\\', array_map(
                     function ($v) {
                         return Text::camelize($v);
                     },
                     explode(':', $result[0])
                 ));
             }
-            $arguments['task'] = $task;
-            $arguments['action'] = $action;
-            if (isset($argv[2])) {
-                $arguments['params'] = array_slice($argv, 2, count($argv) - 2);
+
+            // 设置Action
+            if (empty($result[1])) {
+                $this->action = 'main';
+            } else {
+                $this->action = $result[1];
             }
+
+            // 设置参数
+            if (isset($argv[2])) {
+                $this->params = array_slice($argv, 2, count($argv) - 2);
+            }
+
         } else {
+            // 数组入参方式
             foreach ($argv as $k => $arg) {
                 if ($k == 1) {
-                    $arguments['task'] = $arg;
+                    $this->task = $arg;
                 } elseif ($k == 2) {
-                    $arguments['action'] = $arg;
+                    $this->action = $arg;
                 } elseif ($k >= 3) {
-                    $arguments['params'][] = $arg;
+                    $this->params[] = $arg;
                 }
             }
         }
-        return $arguments;
     }
 
-
+    /**
+     * @desc   获取argv类型 str or array
+     * @author limx
+     */
+    private function getArgvType()
+    {
+        $argv = $this->argv;
+        if (strpos($argv[1], ':') !== false || strpos($argv[1], '@') !== false) {
+            // 存在:或者@即为 新的入参方式（String方式）
+            return self::ARGUMENTS_TYPE_STRING;
+        }
+        // 传统的Array入参方式
+        return self::ARGUMENTS_TYPE_ARRAY;
+    }
 }
