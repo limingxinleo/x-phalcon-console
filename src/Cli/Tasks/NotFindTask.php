@@ -14,17 +14,18 @@ use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 use Symfony\Component\Finder\Finder;
 
-class ListTask extends Task
+class NotFindTask extends Task
 {
+    /** @var  命名空间 */
     protected $namespace;
-
+    /** @var  脚本目录 */
     protected $tasksDir;
-
+    /** @var  脚本名称 */
     protected $taskName;
-
+    /** @var  方法名称 */
     protected $actionName;
-
-    protected $tasks;
+    /** @var  脚本命令名 */
+    protected $tasksName;
 
     public function mainAction(array $params = [])
     {
@@ -73,25 +74,44 @@ class ListTask extends Task
         $finder = new Finder();
         $res = $finder->files()->in($this->tasksDir)->name("*.php");
         if ($res->count() === 0) {
-            echo "对不起，没有找到相关脚本" . PHP_EOL;
+            echo "Command {$this->taskName} is not defined" . PHP_EOL;
             return true;
         }
 
         foreach ($res as $file) {
-            $this->tasks[] = $this->fileToClass($file->getRelativePath(), $file->getBasename(), '.php');
+            $name = $this->fileToTaskName($file->getRelativePath(), $file->getBasename(), '.php');
+            if (strpos($name, $this->taskName) !== false) {
+                $this->tasksName[] = $name;
+            }
         }
-        dd($this->tasks);
+
+        if (count($this->taskName) === 0) {
+            echo "Command {$this->taskName} is not defined" . PHP_EOL;
+            return true;
+        }
+        //     Command "make" is not defined.
+        // Did you mean one of these?
+        //     make:auth
+        echo "Command {$this->taskName} is not defined" . PHP_EOL;
+        echo "Did you mean one of these?" . PHP_EOL;
+        foreach ($this->tasksName as $name) {
+            echo "    " . $name . PHP_EOL;
+        }
+
     }
 
     /**
-     * @desc   把相应文件转化为类名
+     * @desc   把相应文件转化为相应脚本名
      * @author limx
      */
-    protected function fileToClass($relativePath, $baseName, $ext = '.php')
+    protected function fileToTaskName($relativePath, $baseName, $ext = '.php')
     {
         if (!empty($relativePath)) {
-            return $this->namespace . '\\' . $relativePath . '\\' . rtrim($baseName, $ext);
+            $name = $relativePath . '\\' . rtrim($baseName, $ext);
+        } else {
+            $name = rtrim($baseName, $ext);
         }
-        return $this->namespace . '\\' . rtrim($baseName, $ext);
+
+        return $name;
     }
 }
