@@ -27,4 +27,9 @@ class BaseTest extends TestCase
         $this->xconsole->handle(['run', 'test:main@test']);
     }
 
+    public function testParams()
+    {
+        $this->xconsole->handle(['run', 'main@params', 'a=b', 'c=d', '--d=f', '--f', 'ff']);
+    }
+
 }

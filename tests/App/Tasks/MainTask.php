@@ -9,9 +9,12 @@
 namespace Tests\App\Tasks;
 
 use Phalcon\Cli\Task;
+use Xin\Phalcon\Cli\Traits\Input;
 
 class MainTask extends Task
 {
+    use Input;
+
     public function mainAction()
     {
 
@@ -20,5 +23,15 @@ class MainTask extends Task
     public function testAction()
     {
 
+    }
+
+    public function paramsAction($params)
+    {
+        // print_r($this->arguments());
+        // print_r($this->options());
+        // print_r($this->hasOption('d'));
+        // print_r($this->hasArgument('ff'));
+        // print_r($this->option('f'));
+        // print_r($this->argument('ff'));
     }
 }
