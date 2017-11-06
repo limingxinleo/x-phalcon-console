@@ -10,6 +10,10 @@ namespace Xin\Phalcon\Cli\Traits;
 
 trait Input
 {
+    public $option;
+
+    public $argument;
+
     /**
      * Get the value of a command argument.
      *
