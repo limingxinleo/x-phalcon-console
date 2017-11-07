@@ -14,11 +14,11 @@ class MainTask extends Task
 {
     public function mainAction()
     {
-
+        return true;
     }
 
-    public function testAction()
+    public function trueAction()
     {
-
+        return true;
     }
 }

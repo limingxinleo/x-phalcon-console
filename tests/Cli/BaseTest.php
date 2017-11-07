@@ -12,24 +12,56 @@ use Tests\TestCase;
 
 class BaseTest extends TestCase
 {
-    public function testExample()
+    public function testOptions()
     {
-        $this->assertTrue(true);
+        $obj = $this->xconsole->handle(['run', 'main@options', '--t1=1', 't2=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals(['t1' => 1, 't3' => 3], $value);
     }
 
-    public function testEcho1()
+    public function testArguments()
     {
-        $this->xconsole->handle(['run']);
-        $this->xconsole->handle(['run', 'main@main']);
-        $this->xconsole->handle(['run', 'main@test']);
-        $this->xconsole->handle(['run', 'test:main']);
-        $this->xconsole->handle(['run', 'test:main@main']);
-        $this->xconsole->handle(['run', 'test:main@test']);
+        $obj = $this->xconsole->handle(['run', 'main@arguments', '--t1=1', 't2=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals(['t2' => 2, 't4' => 4], $value);
     }
 
-    public function testParams()
+    public function testArgument()
     {
-        $this->xconsole->handle(['run', 'main@params', 'a=b', 'c=d', '--d=f', '--f', 'ff']);
+        $obj = $this->xconsole->handle(['run', 'main@argument', '--t1=1', 'test=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals(2, $value);
     }
 
+    public function testOption()
+    {
+        $obj = $this->xconsole->handle(['run', 'main@option', '--t1=1', '--test=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals(2, $value);
+    }
+
+    public function testHasOption()
+    {
+        $obj = $this->xconsole->handle(['run', 'main@hasOption', '--t1=1', '--test=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertTrue($value);
+    }
+
+    public function testHasArgument()
+    {
+        $obj = $this->xconsole->handle(['run', 'main@hasArgument', '--t1=1', 'test=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertTrue($value);
+    }
+
+    public function testSubTask()
+    {
+        $obj = $this->xconsole->handle(['run', 'test:main', '--t1=1', 'test=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertTrue($value);
+
+        $obj = $this->xconsole->handle(['run', 'test:main', '--t1=1', 'test=2', '--t3=3', 't4=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertTrue($value);
+    }
 }

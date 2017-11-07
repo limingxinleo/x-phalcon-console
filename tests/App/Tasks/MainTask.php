@@ -15,23 +15,33 @@ class MainTask extends Task
 {
     use Input;
 
-    public function mainAction()
+    public function optionsAction()
     {
-
+        return $this->options();
     }
 
-    public function testAction()
+    public function argumentsAction()
     {
-
+        return $this->arguments();
     }
 
-    public function paramsAction($params)
+    public function optionAction()
     {
-        // print_r($this->arguments());
-        // print_r($this->options());
-        // print_r($this->hasOption('d'));
-        // print_r($this->hasArgument('ff'));
-        // print_r($this->option('f'));
-        // print_r($this->argument('ff'));
+        return $this->option('test');
+    }
+
+    public function argumentAction()
+    {
+        return $this->argument('test');
+    }
+
+    public function hasOptionAction()
+    {
+        return $this->hasOption('test');
+    }
+
+    public function hasArgumentAction()
+    {
+        return $this->hasArgument('test');
     }
 }
