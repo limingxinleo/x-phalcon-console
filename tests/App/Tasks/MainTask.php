@@ -44,4 +44,14 @@ class MainTask extends Task
     {
         return $this->hasArgument('test');
     }
+
+    public function argumentDefaultAction()
+    {
+        return $this->argument('_test', 1);
+    }
+
+    public function optionDefaultAction()
+    {
+        return $this->option('_test', 1);
+    }
 }

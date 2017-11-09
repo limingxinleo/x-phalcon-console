@@ -64,4 +64,15 @@ class BaseTest extends TestCase
         $value = $obj->dispatcher->getReturnedValue();
         $this->assertTrue($value);
     }
+
+    public function testDefault()
+    {
+        $obj = $this->xconsole->handle(['run', 'main@optionDefault']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals(1, $value);
+
+        $obj = $this->xconsole->handle(['run', 'main@argumentDefault']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals(1, $value);
+    }
 }

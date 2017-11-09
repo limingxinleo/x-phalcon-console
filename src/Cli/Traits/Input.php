@@ -20,7 +20,7 @@ trait Input
      * @param  string $key
      * @return string|array
      */
-    public function argument($name = null)
+    public function argument($name = null, $default = null)
     {
         if (!isset($this->argument)) {
             $input = $this->dispatcher->getParams();
@@ -47,7 +47,7 @@ trait Input
             return $this->argument[$name];
         }
 
-        return null;
+        return $default;
     }
 
     /**
@@ -91,7 +91,7 @@ trait Input
      * @param  string $key
      * @return string|array
      */
-    public function option($name = null)
+    public function option($name = null, $default = null)
     {
         if (!isset($this->option)) {
             $input = $this->dispatcher->getParams();
@@ -123,7 +123,7 @@ trait Input
             return $this->option[$name];
         }
 
-        return null;
+        return $default;
     }
 
     /**
