@@ -75,4 +75,21 @@ class BaseTest extends TestCase
         $value = $obj->dispatcher->getReturnedValue();
         $this->assertEquals(1, $value);
     }
+
+    public function testInputArray()
+    {
+        $obj = $this->xconsole->handle(['run', 'main@arguments', '--t1=1', 't2=2', '--t3=3', 't4=4', 't2=2', 't2=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals([
+            't2' => [2, 2, 4],
+            't4' => 4
+        ], $value);
+
+        $obj = $this->xconsole->handle(['run', 'main@options', '--t1=1', 't2=2', '--t3=3', '--t3=3', '--t3=4']);
+        $value = $obj->dispatcher->getReturnedValue();
+        $this->assertEquals([
+            't1' => 1,
+            't3' => [3, 3, 4]
+        ], $value);
+    }
 }
