@@ -30,11 +30,8 @@ trait Input
                 if (strpos($res[0], '--') === 0) {
                     continue;
                 }
-                if (isset($res[1])) {
-                    $result[$res[0]] = $res[1];
-                } else {
-                    $result[$res[0]] = true;
-                }
+
+                $result[$res[0]] = $this->getValue($res, $result);
             }
             $this->argument = $result;
         }
@@ -103,13 +100,9 @@ trait Input
                     continue;
                 }
 
-                $key = ltrim($res[0], '--');
+                $res[0] = ltrim($res[0], '--');
 
-                if (isset($res[1])) {
-                    $result[$key] = $res[1];
-                } else {
-                    $result[$key] = true;
-                }
+                $result[$res[0]] = $this->getValue($res, $result);
             }
 
             $this->option = $result;
@@ -134,5 +127,31 @@ trait Input
     public function options()
     {
         return $this->option();
+    }
+
+    /**
+     * @desc
+     * @author limx
+     * @param $item [key,val]
+     * @param $arr  当前入参数组
+     */
+    private function getValue($item, $arr)
+    {
+        $result = null;
+        if (isset($arr[$item[0]]) && !is_bool($arr[$item[0]])) {
+            $result = $arr[$item[0]];
+            // 已经存在相同KEY的入参
+            if (!is_array($result)) {
+                $result = [$result];
+            }
+            $result = array_merge($result, [$item[1]]);
+            return $result;
+        }
+
+        if (isset($item[1])) {
+            return $item[1];
+        }
+
+        return true;
     }
 }
